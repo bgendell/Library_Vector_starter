@@ -80,7 +80,7 @@ int enroll(std::string &name){
  * 
  */
 int numbBooks(){
-	return 0;
+	return NONE;
 }
 
 /*
@@ -88,7 +88,7 @@ int numbBooks(){
  * (ie. if 3 patrons returns 3)
  */
 int numbPatrons(){
-	return 0;
+	return NONE;
 }
 
 /*the number of books patron has checked out
@@ -97,7 +97,7 @@ int numbPatrons(){
  *        or PATRON_NOT_ENROLLED         
  */
 int howmanybooksdoesPatronHaveCheckedOut(int patronid){
-	return 0;
+	return NONE;
 }
 
 /* search through patrons container to see if patronid is there
