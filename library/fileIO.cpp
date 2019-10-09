@@ -1,5 +1,12 @@
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+
 #include "../includes_usr/fileIO.h"
+#include "../includes_usr/library.h"
 using namespace std;
+
 /* clears, then loads books from the file filename
  * returns  COULD_NOT_OPEN_FILE if cannot open filename
  * 			NO_BOOKS_IN_LIBRARY if there are 0 entries in books
@@ -7,9 +14,41 @@ using namespace std;
  * */
 int loadBooks(std::vector<book> &books, const char* filename)
 {
+	books.clear();
+	fstream myfile;
+	myfile.open(filename,ios_base::in);
+	if(!myfile.is_open()){
+		return COULD_NOT_OPEN_FILE;
+	}
+
+	std::string line;
+
+	string tempString;
+	book tempBook;
+
+	while(!myfile.eof()){
+		getline(myfile,line);
+		stringstream ss(line);
+		if(line == ""){
+			break;
+		}
+		//written using 7demo_fileio as a reference file
+		getline(ss,tempString,',');
+		tempBook.book_id=stoi(tempString,nullptr,10);
+		getline(ss,tempBook.title,',');
+		getline(ss,tempBook.author,',');
+		getline(ss,tempString,',');
+		tempBook.state = book_checkout_state(stoi(tempString,nullptr,10));
+		getline(ss,tempString,',');
+		tempBook.loaned_to_patron_id = stoi(tempString,nullptr,10);
+		books.push_back(tempBook);
+		ss.clear();
+	}
+	if (books.empty()){
+		return NO_BOOKS_IN_LIBRARY;
+	}
 	return SUCCESS;
 }
-
 /* serializes books to the file filename
  * returns  COULD_NOT_OPEN_FILE if cannot open filename
  * 			NO_BOOKS_IN_LIBRARY if there are 0 entries books (do not create file)
@@ -17,7 +56,19 @@ int loadBooks(std::vector<book> &books, const char* filename)
  * */
 int saveBooks(std::vector<book> &books, const char* filename)
 {
-	return SUCCESS;
+
+	fstream myfile;
+	myfile.open(filename,ios_base::out);
+	if(!myfile.is_open()){
+		return COULD_NOT_OPEN_FILE;
+	}
+	/*if(myfile.is_open() && books.empty()){
+		myfile.close();
+		return NO_BOOKS_IN_LIBRARY;
+	}*/
+	else{
+		return SUCCESS;
+	}
 }
 
 /* clears, then loads patrons from the file filename
@@ -27,7 +78,36 @@ int saveBooks(std::vector<book> &books, const char* filename)
  * */
 int loadPatrons(std::vector<patron> &patrons, const char* filename)
 {
-	return SUCCESS;
+	patrons.clear();
+		fstream myfile;
+			myfile.open(filename,ios_base::in);
+			if(!myfile.is_open()){
+				return COULD_NOT_OPEN_FILE;
+			}
+
+			std::string line;
+			string tempString;
+			patron tempPatron;
+
+			while(!myfile.eof()){
+				getline(myfile,line);
+				stringstream ss(line);
+				if(line == ""){
+					break;
+				}
+				//written using 7demo_fileio as a reference file
+				getline(ss,tempString,',');
+				tempPatron.patron_id=stoi(tempString,nullptr,10);
+				getline(ss,tempPatron.name,',');
+				getline(ss,tempString,',');
+				tempPatron.number_books_checked_out = stoi(tempString,nullptr,10);
+				patrons.push_back(tempPatron);
+				ss.clear();
+			}
+		if(patrons.empty()){
+			return NO_PATRONS_IN_LIBRARY;
+		}
+		return SUCCESS;
 }
 
 /* serializes patrons to the file filename
@@ -37,5 +117,17 @@ int loadPatrons(std::vector<patron> &patrons, const char* filename)
  * */
 int savePatrons(std::vector<patron> &patrons, const char* filename)
 {
-	return SUCCESS;
+
+	fstream myfile;
+	myfile.open(filename,ios_base::out);
+	if(!myfile.is_open()){
+		return COULD_NOT_OPEN_FILE;
+	}
+	/*if(myfile.is_open() && books.empty()){
+		myfile.close();
+		return NO_PATRONS_IN_LIBRARY;
+	}*/
+	else{
+		return SUCCESS;
+	}
 }
