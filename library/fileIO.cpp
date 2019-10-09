@@ -32,7 +32,7 @@ int loadBooks(std::vector<book> &books, const char* filename)
 		if(line == ""){
 			break;
 		}
-		//written using 7demo_fileio as a reference file
+		//written in reference to 7demo_fileio class example
 		getline(ss,tempString,',');
 		tempBook.book_id=stoi(tempString,nullptr,10);
 		getline(ss,tempBook.title,',');
@@ -56,19 +56,23 @@ int loadBooks(std::vector<book> &books, const char* filename)
  * */
 int saveBooks(std::vector<book> &books, const char* filename)
 {
-
+	if(books.empty()){
+		return NO_BOOKS_IN_LIBRARY;
+	}
 	fstream myfile;
 	myfile.open(filename,ios_base::out);
 	if(!myfile.is_open()){
 		return COULD_NOT_OPEN_FILE;
 	}
-	/*if(myfile.is_open() && books.empty()){
-		myfile.close();
-		return NO_BOOKS_IN_LIBRARY;
-	}*/
-	else{
-		return SUCCESS;
+	for(int i = 0; i<books.size();i++){
+		string toWrite = to_string(books[i].book_id) + "," + books[i].title + ","
+				+ books[i].author + "," +to_string(books[i].state) + "," + to_string(books[i].loaned_to_patron_id) + "\n";
+		myfile << toWrite;
 	}
+
+	myfile.close();
+	return SUCCESS;
+
 }
 
 /* clears, then loads patrons from the file filename
@@ -95,7 +99,7 @@ int loadPatrons(std::vector<patron> &patrons, const char* filename)
 				if(line == ""){
 					break;
 				}
-				//written using 7demo_fileio as a reference file
+				//written in reference to 7demo_fileio class example
 				getline(ss,tempString,',');
 				tempPatron.patron_id=stoi(tempString,nullptr,10);
 				getline(ss,tempPatron.name,',');
@@ -117,17 +121,22 @@ int loadPatrons(std::vector<patron> &patrons, const char* filename)
  * */
 int savePatrons(std::vector<patron> &patrons, const char* filename)
 {
-
+	if(patrons.empty()){
+		return NO_PATRONS_IN_LIBRARY;
+	}
 	fstream myfile;
 	myfile.open(filename,ios_base::out);
 	if(!myfile.is_open()){
 		return COULD_NOT_OPEN_FILE;
 	}
-	/*if(myfile.is_open() && books.empty()){
-		myfile.close();
-		return NO_PATRONS_IN_LIBRARY;
-	}*/
 	else{
+		for(int i = 0; i<patrons.size();i++){
+			string toWrite = to_string(patrons[i].patron_id) + "," + patrons[i].name + ","
+					+ to_string(patrons[i].number_books_checked_out) + "\n";
+			myfile << toWrite;
+		}
+
+		myfile.close();
 		return SUCCESS;
 	}
 }
