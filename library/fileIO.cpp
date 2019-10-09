@@ -64,15 +64,23 @@ int saveBooks(std::vector<book> &books, const char* filename)
 	if(!myfile.is_open()){
 		return COULD_NOT_OPEN_FILE;
 	}
-	for(int i = 0; i<books.size();i++){
-		string toWrite = to_string(books[i].book_id) + "," + books[i].title + ","
-				+ books[i].author + "," +to_string(books[i].state) + "," + to_string(books[i].loaned_to_patron_id) + "\n";
-		myfile << toWrite;
+	else{
+		for(int i = 0; i<books.size();i++){
+			myfile << books[i].book_id;
+			myfile << ",";
+			myfile << books[i].title;
+			myfile << ",";
+			myfile << books[i].author;
+			myfile << ",";
+			myfile << books[i].state;
+			myfile << ",";
+			myfile << books[i].loaned_to_patron_id;
+			myfile << "\n";
+		}
+
+		myfile.close();
+		return SUCCESS;
 	}
-
-	myfile.close();
-	return SUCCESS;
-
 }
 
 /* clears, then loads patrons from the file filename
@@ -131,9 +139,12 @@ int savePatrons(std::vector<patron> &patrons, const char* filename)
 	}
 	else{
 		for(int i = 0; i<patrons.size();i++){
-			string toWrite = to_string(patrons[i].patron_id) + "," + patrons[i].name + ","
-					+ to_string(patrons[i].number_books_checked_out) + "\n";
-			myfile << toWrite;
+			myfile << patrons[i].patron_id;
+			myfile << ",";
+			myfile << patrons[i].name;
+			myfile << ",";
+			myfile << patrons[i].number_books_checked_out;
+			myfile << "\n";
 		}
 
 		myfile.close();
