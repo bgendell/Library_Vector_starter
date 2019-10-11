@@ -77,7 +77,6 @@ int saveBooks(std::vector<book> &books, const char* filename)
 			myfile << books[i].loaned_to_patron_id;
 			myfile << "\n";
 		}
-
 		myfile.close();
 		return SUCCESS;
 	}
