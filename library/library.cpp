@@ -50,16 +50,20 @@ void reloadAllData(){
  */
 int checkout(int bookid, int patronid){
 	reloadAllData();
-	for(patron patron:patrons){
-		if(patron.patron_id == patronid){
-			int numOut = howmanybooksdoesPatronHaveCheckedOut(patronid);
+	for(int i = 0; i < patrons.size(); i++){
+		if(patrons[i].patron_id == patronid){
+			int numOut = patrons[i].number_books_checked_out;
 			if(numOut >= MAX_BOOKS_ALLOWED_OUT){
 				return TOO_MANY_OUT;
 			}
-			for(book book:books){
-				if(book.book_id == bookid){
-					book.loaned_to_patron_id = patronid;
-					book.state = OUT;
+			if(numOut == MAX_BOOKS_ALLOWED_OUT){
+				return MAX_BOOKS_ALLOWED_OUT;
+			}
+			for(int j = 0; j < books.size(); j++){
+				if(books[j].book_id == bookid){
+					books[j].loaned_to_patron_id = patronid;
+					books[j].state = OUT;
+					patrons[i].number_books_checked_out++;
 					saveBooks(books,BOOKFILE.c_str());
 					savePatrons(patrons,PATRONFILE.c_str());
 					return SUCCESS;
@@ -85,17 +89,18 @@ int checkout(int bookid, int patronid){
  */
 int checkin(int bookid){
 	reloadAllData();
-	for(book book:books){
-		if(book.book_id == bookid){
-			for(patron patron:patrons){
-				if(patron.patron_id == book.loaned_to_patron_id){
-					patron.number_books_checked_out--;
+	for(int i = 0; i < books.size(); i++){
+		if(books[i].book_id == bookid){
+			for(int j = 0; j < patrons.size(); j++){
+				if(patrons[j].patron_id == books[i].loaned_to_patron_id){
+					patrons[j].number_books_checked_out--;
+					books[i].loaned_to_patron_id = NO_ONE;
+					books[i].state = IN;
+					saveBooks(books,BOOKFILE.c_str());
+					savePatrons(patrons,PATRONFILE.c_str());
+					break;
 				}
 			}
-			book.loaned_to_patron_id = NO_ONE;
-			book.state = IN;
-			saveBooks(books,BOOKFILE.c_str());
-			savePatrons(patrons,PATRONFILE.c_str());
 			return SUCCESS;
 		}
 	}
@@ -180,4 +185,3 @@ int whatIsPatronName(std::string &name,int patronid){
 	}
 	return PATRON_NOT_ENROLLED;
 }
-
